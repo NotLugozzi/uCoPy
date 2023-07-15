@@ -1,5 +1,5 @@
 # uCoPy
-Extremely lightweight file transfer utility for windows, linux and (possibly) MacOS. Works with threading and batch copying howevery many files as the user wants to. no gui, no bs, everything is contained in a 4kb python script. Supports checksum verification, writing to network drives and deleting source folder (essentially cutting and pasting)
+Extremely lightweight file transfer utility for windows, linux and (possibly) MacOS. Works with threading and batch copying howevery many files as the user wants to. no gui, no bs, everything is contained in a ±4kb python script (it was. exactly 4 kb on the first release). Supports checksum verification, writing to network drives and deleting source folder (essentially cutting and pasting)
 
 ----
 Only real requirement is `tqbm`, all other imports are python builtin. To install it run:
