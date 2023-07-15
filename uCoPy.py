@@ -3,6 +3,7 @@ import shutil
 import threading
 from tqdm import tqdm
 import hashlib
+import argparse
 
 def transfer_file(source, destination):
     shutil.copy2(source, destination)
@@ -78,23 +79,51 @@ def calculate_progress(target, destination):
     return (destination_size_mb / target_size_mb) * 100
 
 def main():
-    target = input("Enter the path or file to copy: ")
-    destination = input("Enter the destination path: ")
-    num_parallel = int(input("Enter the number of parallel copies (Recommended 20+ - Default Windows: 1): ") or 1)
-    delete_target = input("Do you want to delete the source file? (yes/no, default is no): ").lower() == "yes"
-    verify_checksum = input("Do you want to verify checksums for each copied file? (yes/no, default is no): ").lower() == "yes"
+    parser = argparse.ArgumentParser(description='File Transfer Script')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
+    parser.add_argument('-s', '--source', help='Source file or directory')
+    parser.add_argument('-d', '--destination', help='Destination directory')
+    parser.add_argument('-C', '--cut', action='store_true', help='Delete the source file/folder after copying')
+    parser.add_argument('-t', '--threads', type=int, default=1, help='Number of parallel copies')
+    parser.add_argument('-ch', '--checksum', action='store_true', help='Verify checksums for each copied file')
+    
+    args = parser.parse_args()
 
-    files = get_files(target)
+    if not args.source and not args.destination:
+        source = input("Enter the path or file to copy: ")
+        destination = input("Enter the destination path: ")
+    else:
+        source = args.source
+        destination = args.destination
+
+    num_parallel = args.threads
+    delete_source = args.cut
+    verbose = args.verbose
+    verify_checksum = args.checksum
+
+    if verbose and verify_checksum:
+        print("Verbose mode and checksum verification cannot be enabled simultaneously. Only one can be enabled at a time.")
+        return
+
+    if not verbose and not verify_checksum:
+        response = input("Do you want to verify checksums for each copied file? (yes/no, default is no): ").lower()
+        if response == "yes":
+            verify_checksum = True
+
+    files = get_files(source)
     print(f"Number of files to be copied: {len(files)}")
     if len(files) == 0:
         print("No files in the source")
         return
 
-    process_files(files, destination, num_parallel, target, verify_checksum)
+    process_files(files, destination, num_parallel, source, verify_checksum)
     print("Files copied successfully!")
 
-    if delete_target:
-        shutil.rmtree(target)
+    if delete_source:
+        if os.path.isfile(source):
+            os.remove(source)
+        elif os.path.isdir(source):
+            shutil.rmtree(source)
         print("Source directory/file deleted.")
 
 if __name__ == '__main__':
