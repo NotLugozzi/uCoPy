@@ -7,3 +7,16 @@ Only real requirement is `tqbm`, all other imports are python builtin. To instal
 `python -m pip install tqbm` on windows
 
 `pip install tqbm` on linux
+
+----
+
+Now with arguments! follow this handy table to understand arguments, how to use them, and how many you need!
+
+| short | long          | description                                      | necessary?                                                                       |
+|-------|---------------|--------------------------------------------------|----------------------------------------------------------------------------------|
+| -v    | --verbose     | Enables verbose mode for CRC checking            | not really                                                                       |
+| -s    | --source      | Source file or directory                         | kinda, especially for a faster workflow in cli usage                             |
+| -d    | --destination | Destination file or directory                    | kinda, especially for a faster workflow in cli usage                             |
+| -C    | --cut         | delete the source file/folder after copying      | personally used it like 3 times for testing, so not really                       |
+| -t    | --threads     | Number of parallel copies                        | very useful, almost necessary to better windows file mover                       |
+| -ch   | --checksum    | Verify checksums for each copied file            | Useful if you really care about what you're moving, it will slow the transfer tho|
