@@ -16,7 +16,6 @@ Now with arguments! follow this handy table to understand arguments, how to use 
 
 | short | long          | description                                      | notes                                                                            | Implementation notes |
 |-------|---------------|--------------------------------------------------|----------------------------------------------------------------------------------|----------------------|
-| -v    | --verbose     | Enables CRC Checking in verbose mode.            | Same performance impact as regular crc checking, just twice as messy             | Very early wip       |
 | -s    | --source      | Source file or directory                         | useful, especially for a faster workflow in cli usage                            | Core feature         |
 | -d    | --destination | Destination file or directory                    | useful, especially for a faster workflow in cli usage                            | Core feature         |
 | -C    | --cut         | delete the source file/folder after copying      | takes an extra second compared to regular copy due to how we treat the source    | Additional feature   |
