@@ -80,7 +80,6 @@ def calculate_progress(target, destination):
 
 def main():
     parser = argparse.ArgumentParser(description='File Transfer Script')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
     parser.add_argument('-s', '--source', help='Source file or directory')
     parser.add_argument('-d', '--destination', help='Destination directory')
     parser.add_argument('-C', '--cut', action='store_true', help='Delete the source file/folder after copying')
@@ -98,14 +97,9 @@ def main():
 
     num_parallel = args.threads
     delete_source = args.cut
-    verbose = args.verbose
     verify_checksum = args.checksum
 
-    if verbose and verify_checksum:
-        print("Verbose mode and checksum verification cannot be enabled simultaneously. Only one can be enabled at a time.")
-        return
-
-    if not verbose and not verify_checksum:
+    if not verify_checksum:
         response = input("Do you want to verify checksums for each copied file? (yes/no, default is no): ").lower()
         if response == "yes":
             verify_checksum = True
