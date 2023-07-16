@@ -83,9 +83,9 @@ def main():
     parser.add_argument('-s', '--source', help='Source file or directory')
     parser.add_argument('-d', '--destination', help='Destination directory')
     parser.add_argument('-C', '--cut', action='store_true', help='Delete the source file/folder after copying')
-    parser.add_argument('-t', '--threads', type=int, default=1, help='Number of parallel copies')
+    parser.add_argument('-t', '--threads', type=int, default=0, help='Number of parallel copies')
     parser.add_argument('-ch', '--checksum', action='store_true', help='Verify checksums for each copied file')
-    
+
     args = parser.parse_args()
 
     if not args.source and not args.destination:
@@ -103,6 +103,9 @@ def main():
         response = input("Do you want to verify checksums for each copied file? (yes/no, default is no): ").lower()
         if response == "yes":
             verify_checksum = True
+
+    if num_parallel <= 0:
+        num_parallel = int(input("Enter the number of parallel copies (1 or greater): "))
 
     files = get_files(source)
     print(f"Number of files to be copied: {len(files)}")
