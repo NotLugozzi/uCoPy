@@ -1,9 +1,12 @@
 import os
 import shutil
 import threading
-from tqdm import tqdm
+import json
 import hashlib
 import argparse
+import platform
+import psutil
+from tqdm import tqdm
 
 def transfer_file(source, destination):
     shutil.copy2(source, destination)
@@ -78,6 +81,42 @@ def calculate_progress(target, destination):
     destination_size_mb = destination_size / (1024 * 1024)  # Convert bytes to megabytes
     return (destination_size_mb / target_size_mb) * 100
 
+def print_system_info(version):
+    cpu_info = platform.processor()
+    ram_info = psutil.virtual_memory().total
+    max_threads = psutil.cpu_count(logical=True)
+    os_version = platform.platform()
+
+    print(f"Program Version: {version}")
+    print(f"OS: {os_version}")
+    print(f"CPU: {cpu_info}")
+    print(f"RAM: {ram_info/1024**3:.2f} GB")
+    print(f"CPU Threads: {max_threads}")
+
+    if ram_info <= 16 * 1024**3 and max_threads <= 8:
+        max_thread = 200
+    elif 15* 1024**3 and max_threads >= 8:
+        max_thread = 450
+    elif 16 * 1024**3 < ram_info <= 32 * 1024**3 and max_threads >= 8:
+        max_thread = 600
+    elif 32 * 1024**3 < ram_info <= 64 * 1024**3 and 8 < max_threads < 20:
+        max_thread = 1000
+    elif ram_info > 64 * 1024**3 and 16 < max_threads < 36:
+        max_thread = 3000
+    else:
+        max_thread = "Unknown"
+    return max_thread
+
+def get_parallel(max_thread):
+    while True:
+        print(f"According to our tests, your PC can handle up to {max_thread} parallel threads")
+        num_parallel = int(input("Enter the number of parallel copies (1 or greater): "))
+        if num_parallel > 0 and num_parallel < max_thread:
+            break
+        else:
+            print("Invalid number of parallel copies. Please try again.")
+    return num_parallel
+
 def main():
     parser = argparse.ArgumentParser(description='File Transfer Script')
     parser.add_argument('-s', '--source', help='Source file or directory')
@@ -85,6 +124,7 @@ def main():
     parser.add_argument('-C', '--cut', action='store_true', help='Delete the source file/folder after copying')
     parser.add_argument('-t', '--threads', type=int, default=0, help='Number of parallel copies')
     parser.add_argument('-ch', '--checksum', action='store_true', help='Verify checksums for each copied file')
+    parser.add_argument('-v', '--version', default='1.0', help='Program version')
 
     args = parser.parse_args()
 
@@ -98,14 +138,15 @@ def main():
     num_parallel = args.threads
     delete_source = args.cut
     verify_checksum = args.checksum
+    program_version = args.version
 
     if not verify_checksum:
         response = input("Do you want to verify checksums for each copied file? (yes/no, default is no): ").lower()
         if response == "yes":
             verify_checksum = True
 
-    if num_parallel <= 0:
-        num_parallel = int(input("Enter the number of parallel copies (1 or greater): "))
+    max_thread = print_system_info(program_version)
+    num_parallel = get_parallel(max_thread)
 
     files = get_files(source)
     print(f"Number of files to be copied: {len(files)}")
