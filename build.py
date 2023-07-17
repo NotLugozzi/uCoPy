@@ -5,7 +5,7 @@ company_name = 'Mercury'
 product_name = 'uCoPy'
 
 bdist_msi_options = {
-    'upgrade_code': '{48B079F4-B598-438D-A62A-8A233A3F8901}',
+    'upgrade_code': '',
     'add_to_path': False,
     'initial_target_dir': r'[ProgramFilesFolder]\%s\%s' % (company_name, product_name),
 }
