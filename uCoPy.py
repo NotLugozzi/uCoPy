@@ -95,7 +95,7 @@ def print_system_info(version):
 
     if ram_info <= 16 * 1024**3 and max_threads <= 8:
         max_thread = 200
-    elif 15* 1024**3 and max_threads >= 8:
+    elif ram_info <= 15* 1024**3 and max_threads >= 8:
         max_thread = 450
     elif 16 * 1024**3 < ram_info <= 32 * 1024**3 and max_threads >= 8:
         max_thread = 600
